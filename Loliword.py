@@ -1,11 +1,12 @@
-from telegram import Update, InputFile
-from telegram.ext import Updater, MessageHandler, Filters, CallbackContext, CommandHandler
-import os
-from datetime import datetime
 import sys
 if sys.version_info >= (3, 13):
     import types
     sys.modules['imghdr'] = types.SimpleNamespace(what=lambda *args, **kwargs: 'jpeg')
+
+from telegram import Update, InputFile
+from telegram.ext import Updater, MessageHandler, Filters, CallbackContext, CommandHandler
+import os
+from datetime import datetime
 
 # === CONFIGURACIÓN ===
 TOKEN = '8108375229:AAHPN_ATR_y0EPC9f9pfHMVPLgYFV5gZWzE'
@@ -28,7 +29,6 @@ def manejar_archivo(update: Update, context: CallbackContext):
         update.message.reply_text("❌ No se detectó una imagen o video.")
         return
 
-    # Nombre de archivo anónimo
     nombre_archivo = f"archivo_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.{tipo}"
     ruta_local = os.path.join(CARPETA_TEMPORAL, nombre_archivo)
 
@@ -65,6 +65,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
