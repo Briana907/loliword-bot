@@ -1,3 +1,10 @@
+# ========== FIX para Python 3.13 ==========
+import sys
+if sys.version_info >= (3, 13):
+    import types
+    sys.modules['imghdr'] = types.SimpleNamespace(what=lambda *args, **kwargs: 'jpeg')
+# ==========================================
+
 from flask import Flask
 from threading import Thread
 
@@ -6,14 +13,6 @@ from telegram.ext import Updater, MessageHandler, Filters, CallbackContext, Comm
 
 import os
 from datetime import datetime
-import sys
-
-# =============================
-# FIX para Python 3.13 (sin imghdr)
-if sys.version_info >= (3, 13):
-    import types
-    sys.modules['imghdr'] = types.SimpleNamespace(what=lambda *args, **kwargs: 'jpeg')
-# =============================
 
 # === CONFIGURACIÓN ===
 TOKEN = '8108375229:AAHPN_ATR_y0EPC9f9pfHMVPLgYFV5gZWzE'
