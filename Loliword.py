@@ -2,6 +2,10 @@ from telegram import Update, InputFile
 from telegram.ext import Updater, MessageHandler, Filters, CallbackContext, CommandHandler
 import os
 from datetime import datetime
+import sys
+if sys.version_info >= (3, 13):
+    import types
+    sys.modules['imghdr'] = types.SimpleNamespace(what=lambda *args, **kwargs: 'jpeg')
 
 # === CONFIGURACIÓN ===
 TOKEN = '8108375229:AAHPN_ATR_y0EPC9f9pfHMVPLgYFV5gZWzE'
