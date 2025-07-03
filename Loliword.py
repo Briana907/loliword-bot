@@ -1,20 +1,17 @@
-from telegram import Update, InputFile
-from telegram.ext import Updater, MessageHandler, Filters, CallbackContext, CommandHandler
-from flask import Flask
-import threading
-import os
-from datetime import datetime
 import sys
-
-# === FIX para Python 3.13 por incompatibilidad con imghdr ===
 if sys.version_info >= (3, 13):
     import types
     sys.modules['imghdr'] = types.SimpleNamespace(what=lambda *args, **kwargs: 'jpeg')
 
+from telegram import Update, InputFile
+from telegram.ext import Updater, MessageHandler, Filters, CallbackContext, CommandHandler
+import os
+from datetime import datetime
+
 # === CONFIGURACIÓN ===
 TOKEN = '8108375229:AAHPN_ATR_y0EPC9f9pfHMVPLgYFV5gZWzE'
 ID_GRUPO = -1002726351464
-CARPETA_TEMPORAL = 'LoliBot'
+CARPETA_TEMPORAL = r'G:\Mi unidad\LoliBot'
 
 # Crear carpeta si no existe
 os.makedirs(CARPETA_TEMPORAL, exist_ok=True)
@@ -32,6 +29,7 @@ def manejar_archivo(update: Update, context: CallbackContext):
         update.message.reply_text("❌ No se detectó una imagen o video.")
         return
 
+    # Nombre de archivo anónimo
     nombre_archivo = f"archivo_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.{tipo}"
     ruta_local = os.path.join(CARPETA_TEMPORAL, nombre_archivo)
 
@@ -66,20 +64,9 @@ def main():
     updater.start_polling()
     updater.idle()
 
-# === SERVIDOR WEB PARA RENDER ===
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return '🤖 Loliword Bot is running!'
-
-def iniciar_flask():
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
-
-# === EJECUCIÓN ===
 if __name__ == '__main__':
-    threading.Thread(target=iniciar_flask).start()
     main()
+
 
 
 
