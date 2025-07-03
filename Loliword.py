@@ -79,8 +79,9 @@ def mantener_vivo():
 
 # === MAIN ===
 if __name__ == '__main__':
-    Thread(target=iniciar_bot).start()
-    mantener_vivo()
+    Thread(target=mantener_vivo).start()
+    iniciar_bot()
+
 
 
 
