@@ -1,26 +1,26 @@
-import sys
-if sys.version_info >= (3, 13):
-    import types
-    sys.modules['imghdr'] = types.SimpleNamespace(what=lambda *args, **kwargs: 'jpeg')
-
 from telegram import Update, InputFile
 from telegram.ext import Updater, MessageHandler, Filters, CallbackContext, CommandHandler
 import os
 from datetime import datetime
+import sys
+
+# === FIX para Python 3.13 ===
+if sys.version_info >= (3, 13):
+    import types
+    sys.modules['imghdr'] = types.SimpleNamespace(what=lambda *args, **kwargs: 'jpeg')
 
 # === CONFIGURACIÓN ===
 TOKEN = '8108375229:AAHPN_ATR_y0EPC9f9pfHMVPLgYFV5gZWzE'
 ID_GRUPO = -1002726351464
-CARPETA_TEMPORAL = r'G:\Mi unidad\LoliBot'
+CARPETA_TEMPORAL = '/tmp/loliword'
 
-# Crear carpeta si no existe
 os.makedirs(CARPETA_TEMPORAL, exist_ok=True)
 
-# === COMANDO /start ===
+# === /start ===
 def start(update: Update, context: CallbackContext):
     update.message.reply_text("👋 Puedes enviarme fotos o videos y los reenviaré al grupo como archivo, de forma anónima.")
 
-# === MANEJADOR DE ARCHIVOS ===
+# === ARCHIVOS ===
 def manejar_archivo(update: Update, context: CallbackContext):
     archivo = update.message.photo[-1] if update.message.photo else update.message.video
     tipo = 'jpg' if update.message.photo else 'mp4'
@@ -29,7 +29,6 @@ def manejar_archivo(update: Update, context: CallbackContext):
         update.message.reply_text("❌ No se detectó una imagen o video.")
         return
 
-    # Nombre de archivo anónimo
     nombre_archivo = f"archivo_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.{tipo}"
     ruta_local = os.path.join(CARPETA_TEMPORAL, nombre_archivo)
 
@@ -43,16 +42,29 @@ def manejar_archivo(update: Update, context: CallbackContext):
                 document=InputFile(f),
                 disable_content_type_detection=True
             )
-
         os.remove(ruta_local)
-        print(f"✅ Enviado y eliminado: {nombre_archivo}")
         update.message.reply_text("✅ Archivo enviado al grupo correctamente.")
-
     except Exception as e:
-        print(f"❌ Error: {e}")
-        update.message.reply_text("❌ Ocurrió un error al enviar tu archivo.")
+        update.message.reply_text("❌ Error al enviar el archivo.")
 
-# === INICIO DEL BOT ===
+# === FLASK PARA RENDER + UPTIME ROBOT ===
+from flask import Flask
+import threading
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "✅ Bot activo"
+
+def run_flask():
+    app.run(host='0.0.0.0', port=8080)
+
+def mantener_vivo():
+    hilo = threading.Thread(target=run_flask)
+    hilo.start()
+
+# === INICIO ===
 def main():
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
@@ -60,12 +72,13 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(MessageHandler(Filters.photo | Filters.video, manejar_archivo))
 
-    print("🤖 Bot activo y esperando archivos...")
     updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
+    mantener_vivo()
     main()
+
 
 
 
