@@ -15,7 +15,7 @@ import os
 from datetime import datetime
 
 # === CONFIGURACIÓN ===
-TOKEN = '8108375229:AAHPN_ATR_y0EPC9f9pfHMVPLgYFV5gZWzE'
+TOKEN = '8108375229:AAFnk3l1eALK5OSIR8XJo6do1p7C6mRSlHI'
 ID_GRUPO = -1002726351464
 CARPETA_TEMPORAL = 'tmp_files'
 os.makedirs(CARPETA_TEMPORAL, exist_ok=True)
